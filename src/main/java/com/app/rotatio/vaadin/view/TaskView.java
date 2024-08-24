@@ -3,6 +3,7 @@ package com.app.rotatio.vaadin.view;
 import com.app.rotatio.vaadin.domain.dto.TaskDto;
 import com.app.rotatio.vaadin.service.BaseViewService;
 import com.app.rotatio.vaadin.service.TaskViewService;
+import com.app.rotatio.vaadin.view.button.ButtonHelper;
 import com.app.rotatio.vaadin.view.format.FormatMethods;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -12,12 +13,13 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.BoxSizing;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.router.Route;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,11 +32,11 @@ public class TaskView extends BaseView {
     private final Binder<TaskDto> binder = new Binder<>(TaskDto.class);
     private Grid<TaskDto> taskGrid;
 
-    public TaskView(BaseViewService baseViewService, RestTemplate restTemplate, TaskViewService taskService) {
+    public TaskView(BaseViewService<TaskDto> baseViewService, RestTemplate restTemplate, TaskViewService taskService) {
         super(baseViewService, restTemplate);
         this.taskService = taskService;
 
-        VerticalLayout mainContent = createMainContent();
+        VerticalLayout mainContent = baseViewService.createMainContent("Tasks");
         setContent(mainContent);
 
         List<TaskDto> tasks = taskService.getAllTasks();
@@ -42,18 +44,10 @@ public class TaskView extends BaseView {
         VerticalLayout leftLayout = createLeftLayout(taskGrid);
         VerticalLayout rightLayout = createRightLayout();
 
-        HorizontalLayout splitLayout = createSplitLayout(leftLayout, rightLayout);
+        HorizontalLayout splitLayout = taskService.createSplitLayout(leftLayout, rightLayout);
         mainContent.add(splitLayout);
-        configureDialog();
-    }
-
-    private HorizontalLayout createSplitLayout(VerticalLayout leftLayout, VerticalLayout rightLayout) {
-        HorizontalLayout splitLayout = new HorizontalLayout();
-        splitLayout.setSizeFull();
-
-        splitLayout.add(leftLayout, rightLayout);
-
-        return splitLayout;
+        taskService.configureDialog(dialog);
+        refreshGrid();
     }
 
     private VerticalLayout createRightLayout() {
@@ -97,12 +91,12 @@ public class TaskView extends BaseView {
         filterLayout.setSpacing(true);
 
         Checkbox performedFilterCheckbox = new Checkbox("is performed");
-        Button showButton = new Button("show", event -> {
+        Button showButton = new Button("Show", event -> {
             boolean isPerformed = performedFilterCheckbox.getValue();
             List<TaskDto> filteredTasks = taskService.getTasksByPerformed(isPerformed);
             taskGrid.setItems(filteredTasks);
         });
-        Button showAllButton = new Button("show all", event -> {
+        Button showAllButton = new Button("Show all", event -> {
             List<TaskDto> allTasks = taskService.getAllTasks();
             taskGrid.setItems(allTasks);
         });
@@ -117,9 +111,10 @@ public class TaskView extends BaseView {
     private Grid<TaskDto> createTaskGrid(List<TaskDto> tasks) {
         Grid<TaskDto> taskDtoGrid = new Grid<>(TaskDto.class);
         taskDtoGrid.removeAllColumns();
+        taskDtoGrid.addColumn(TaskDto::getId).setHeader("ID").setVisible(false);
         taskDtoGrid.addColumn(TaskDto::getName).setHeader("Name");
         taskDtoGrid.addColumn(TaskDto::getDescription).setHeader("Description");
-        taskDtoGrid.addColumn(TaskDto::isPerformed).setHeader("Performed");
+        taskDtoGrid.addColumn(TaskDto::getIsPerformed).setHeader("Performed");
         taskDtoGrid.addComponentColumn(this::createEditButton).setHeader("Edit");
         taskDtoGrid.setItems(tasks);
         return taskDtoGrid;
@@ -133,14 +128,21 @@ public class TaskView extends BaseView {
 
     private void openDialog(TaskDto task) {
         TextField nameField = new TextField("Task name");
-        TextArea descriptionField = new TextArea("Description");
+        TextField descriptionField = new TextField("Description");
+        TextField idField = new TextField("id");
+        idField.setVisible(false);
+
         Checkbox performedField = new Checkbox("Performed");
 
         binder.bind(nameField, TaskDto::getName, TaskDto::setName);
         binder.bind(descriptionField, TaskDto::getDescription, TaskDto::setDescription);
-        binder.bind(performedField, TaskDto::isPerformed, TaskDto::setPerformed);
-
+        binder.bind(performedField, TaskDto::getIsPerformed, TaskDto::setIsPerformed);
+        binder.forField(idField)
+                .withConverter(
+                        new StringToLongConverter("Invalid ID"))
+                .bind(TaskDto::getId, TaskDto::setId);
         binder.readBean(task);
+
 
         Button saveButton = new Button("Save", e -> {
             if (binder.writeBeanIfValid(task)) {
@@ -150,28 +152,13 @@ public class TaskView extends BaseView {
             dialog.close();
         });
 
-        VerticalLayout dialogLayout = new VerticalLayout(nameField, descriptionField, performedField, saveButton);
+        Button cancelButton = ButtonHelper.createDialogCancelButton(dialog);
+
+        VerticalLayout dialogLayout = new VerticalLayout(nameField, descriptionField, performedField, saveButton, cancelButton);
         dialog.removeAll();
         dialog.add(dialogLayout);
         dialog.open();
-    }
-
-    private void configureDialog() {
-        dialog.setWidth("400px");
-        dialog.setHeight("300px");
-    }
-
-    private VerticalLayout createMainContent() {
-        VerticalLayout mainContent = new VerticalLayout();
-        mainContent.setSizeFull();
-        mainContent.setPadding(true);
-
-        NativeLabel titleLabel = new NativeLabel("Tasks");
-        titleLabel.getStyle()
-                .set("font-size", "36px")
-                .set("font-weight", "bold");
-        mainContent.add(titleLabel);
-        return mainContent;
+        dialogLayout.setBoxSizing(BoxSizing.CONTENT_BOX);
     }
 
     private void refreshGrid() {

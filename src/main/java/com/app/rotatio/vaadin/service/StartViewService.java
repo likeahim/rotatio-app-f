@@ -51,9 +51,11 @@ public class StartViewService {
                         UserDto.class
                 );
 
-                VaadinSession.getCurrent().setAttribute("userId", response.getBody().id());
-                VaadinSession.getCurrent().setAttribute("userToken", response.getBody().userToken());
-                Notification.show("Logged in with user: " + response.getBody().email(), 3000, Notification.Position.TOP_CENTER);
+                VaadinSession.getCurrent().setAttribute("userId", response.getBody().getId());
+                VaadinSession.getCurrent().setAttribute("userToken", response.getBody().getUserToken());
+                FieldContainer.LOG_IN.clear();
+                FieldContainer.PASSWORD.clear();
+                Notification.show("Logged in with user: " + response.getBody().getEmail(), 3000, Notification.Position.TOP_CENTER);
                 UI.getCurrent().navigate(MainView.class);
             } catch (Exception e) {
                 Notification.show("Log in failed: " + e.getMessage(), 3000, Notification.Position.TOP_CENTER);

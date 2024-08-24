@@ -1,14 +1,20 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
 import com.app.rotatio.vaadin.view.MainView;
 import com.app.rotatio.vaadin.view.StartView;
 import com.app.rotatio.vaadin.view.format.FormatMethods;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
@@ -24,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import static javax.swing.UIManager.getUI;
 
 @Service
-public class BaseViewService {
+public class BaseViewService<T> {
 
     public final RestTemplate restTemplate;
 
@@ -47,13 +53,15 @@ public class BaseViewService {
         Tab userData = createTab(VaadinIcon.USER, "User Data");
         Tab workers = createTab(VaadinIcon.RECORDS, "Workers");
         Tab plans = createTab(VaadinIcon.LIST, "Plans");
+        Tab archivedPlans = createTab(VaadinIcon.ARCHIVE, "Archived Plans");
         FormatMethods.setNavigate(home, "main");
         FormatMethods.setNavigate(workplaces, "workplaces");
         FormatMethods.setNavigate(plans, "plans");
         FormatMethods.setNavigate(tasks, "tasks");
         FormatMethods.setNavigate(workers, "workers");
         FormatMethods.setNavigate(userData, "user-data");
-        tabs.add(home, plans, workers, workplaces, tasks, userData);
+        FormatMethods.setNavigate(archivedPlans, "archived-plans");
+        tabs.add(home, plans, workers, workplaces, tasks, userData, archivedPlans);
 
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
@@ -74,6 +82,43 @@ public class BaseViewService {
         return new Tab(link);
     }
 
+    public VerticalLayout createMainContent(String title) {
+        VerticalLayout mainContent = new VerticalLayout();
+        mainContent.setSizeFull();
+        mainContent.setPadding(true);
+
+        NativeLabel titleLabel = new NativeLabel(title);
+        titleLabel.getStyle()
+                .set("font-size", "36px")
+                .set("font-weight", "bold");
+        mainContent.add(titleLabel);
+        return mainContent;
+    }
+
+    public HorizontalLayout createSplitLayout(VerticalLayout leftLayout, VerticalLayout rightLayout) {
+        HorizontalLayout splitLayout = new HorizontalLayout();
+        splitLayout.setSizeFull();
+        splitLayout.add(leftLayout, rightLayout);
+        return splitLayout;
+    }
+
+    public VerticalLayout createLeftLayout(Grid<T> grid, HorizontalLayout layout) {
+        VerticalLayout leftLayout = new VerticalLayout();
+        leftLayout.setWidth("70%");
+        leftLayout.setPadding(false);
+        leftLayout.setSpacing(false);
+        leftLayout.add(grid);
+        layout.getStyle().set("border", "1px solid black").set("padding", "10px");
+        leftLayout.add(layout, grid);
+        return leftLayout;
+    }
+
+    public void configureDialog(Dialog dialog) {
+        dialog.setWidth("400px");
+        dialog.setHeight("300px");
+    }
+
+//to transfer in other service?
     public void logOut(Button logOutButton, RestTemplate restTemplate) {
         logOutButton.addClickListener(event -> {
             Long userId = (Long) VaadinSession.getCurrent().getAttribute("userId");
@@ -91,8 +136,7 @@ public class BaseViewService {
                     VaadinSession.getCurrent().setAttribute("userId", null);
                     VaadinSession.getCurrent().setAttribute("userToken", null);
                     Notification.show("Logged out successfully.");
-                    UI.getCurrent().close();
-                    VaadinSession.getCurrent().close();
+                    UI.getCurrent().navigate("");
                 } else {
                     Notification.show("Failed to logout. Please try again.", 5000, Notification.Position.MIDDLE);
                 }

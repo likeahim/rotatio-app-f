@@ -11,5 +11,5 @@ public class TaskDto {
         @NotNull
         private String name;
         private String description;
-        private boolean isPerformed;
+        private Boolean isPerformed;
 }

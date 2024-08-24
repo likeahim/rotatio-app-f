@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.web.client.RestTemplate;
 
-@Route("start")
+@Route("")
 public class StartView extends VerticalLayout {
 
     private final RestTemplate restTemplate;

@@ -25,7 +25,7 @@ public class ButtonHelper {
 
     private static void showLogOutDialog() {
         Dialog logOutDialog = new Dialog();
-        logOutDialog.add("Are you sure you want to log out?");
+        logOutDialog.add("Login out in progress, see you soon");
         Button confirmButton = new Button("OK", event -> {
             Notification.show("Logging out...");
             logOutDialog.close();
@@ -33,5 +33,9 @@ public class ButtonHelper {
         Button cancelButton = new Button("Cancel", event -> logOutDialog.close());
         logOutDialog.add(confirmButton, cancelButton);
         logOutDialog.open();
+    }
+
+    public static Button createDialogCancelButton(Dialog dialog) {
+        return new Button("Cancel", e -> dialog.close());
     }
 }

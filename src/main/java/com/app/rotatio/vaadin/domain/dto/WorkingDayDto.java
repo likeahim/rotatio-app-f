@@ -1,15 +1,22 @@
 package com.app.rotatio.vaadin.domain.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 
-public record WorkingDayDto(
-        Long id,
-        LocalDate created,
-        LocalDate executeDate,
-        boolean planned,
-        boolean archived,
-        Long userId,
-        List<Long> workers
-) {
+@Getter
+@Setter
+@AllArgsConstructor
+public class WorkingDayDto {
+        private Long id;
+        private LocalDate created;
+        private LocalDate executeDate;
+        private Boolean planned;
+        private Boolean archived;
+        private Long userId;
+        private List<Long> workers;
 }
