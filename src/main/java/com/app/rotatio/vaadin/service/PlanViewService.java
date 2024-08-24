@@ -2,7 +2,6 @@ package com.app.rotatio.vaadin.service;
 
 import com.app.rotatio.vaadin.domain.dto.ArchiveDto;
 import com.app.rotatio.vaadin.domain.dto.TaskDto;
-import com.app.rotatio.vaadin.domain.dto.UserDto;
 import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
 import com.vaadin.flow.component.notification.Notification;
 import org.springframework.core.ParameterizedTypeReference;
@@ -43,13 +42,22 @@ public class PlanViewService extends BaseViewService {
         ).getBody();
     }
 
-    public List<WorkingDayDto> getPlannedPlans() {
+    public List<WorkingDayDto> getPlansByPlanned(boolean planned) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays/planned/" + true,
+                "http://localhost:8080/v1/rotatio/workingDays/planned/" + planned,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkingDayDto>>() {
                 }
+        ).getBody();
+    }
+
+    public List<WorkingDayDto> getPlansByArchived(boolean archived) {
+        return restTemplate.exchange(
+                "http://localhost:8080/v1/rotatio/workingDays/byArchived/" + archived,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<WorkingDayDto>>() {}
         ).getBody();
     }
 

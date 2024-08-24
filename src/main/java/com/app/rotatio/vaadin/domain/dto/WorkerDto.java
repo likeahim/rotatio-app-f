@@ -15,8 +15,6 @@ public class WorkerDto {
         private String firstName;
         private String lastname;
         private int status;
-        private LocalDate presenceFrom;
-        private LocalDate absenceFrom;
         private Long workingDayId;
         private Long taskId;
         private Long workplaceId;

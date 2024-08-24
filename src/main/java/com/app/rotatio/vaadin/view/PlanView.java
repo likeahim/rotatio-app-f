@@ -1,8 +1,6 @@
 package com.app.rotatio.vaadin.view;
 
 import com.app.rotatio.vaadin.domain.dto.ArchiveDto;
-import com.app.rotatio.vaadin.domain.dto.TaskDto;
-import com.app.rotatio.vaadin.domain.dto.UserDto;
 import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
 import com.app.rotatio.vaadin.service.BaseViewService;
 import com.app.rotatio.vaadin.service.PlanViewService;
@@ -25,7 +23,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -135,7 +132,7 @@ public class PlanView extends BaseView {
             workingDayGrid.setItems(usersPlans);
         });
         Button showPlannedPlans = new Button("Show all planned", event -> {
-            List<WorkingDayDto> plannedPlans = planService.getPlannedPlans();
+            List<WorkingDayDto> plannedPlans = planService.getPlansByPlanned(true);
             workingDayGrid.setItems(plannedPlans);
         });
         DatePicker executeDate = new DatePicker(LocalDate.now());

@@ -84,7 +84,7 @@ public class ArchieveView extends BaseView {
         NativeLabel label;
         Grid<ArchiveDto> archivesGrid = new Grid<>(ArchiveDto.class);
         archivesGrid.removeAllColumns();
-        if(archives.isEmpty()) {
+        if (archives.isEmpty()) {
             label = new NativeLabel("No archive found");
             Notification.show("No archives", 3000, Notification.Position.MIDDLE);
             return archivesGrid;
@@ -105,7 +105,8 @@ public class ArchieveView extends BaseView {
     private Component createShowWorkersButton(ArchiveDto archiveDto) {
         return new Button("Show workers", VaadinIcon.USERS.create(), event -> {
             List<WorkerDto> workers = service.getPlannedWorkers(archiveDto.getWorkingDayId());
-            Grid<WorkerDto> workersGrid = getWorkerDtoGrid(workers);
+            Grid<WorkerDto> workersGrid = new Grid<>(WorkerDto.class);
+            workersGrid = getWorkerDtoGrid(workersGrid, workers);
             rightLayout.add(workersGrid);
             if (workers.isEmpty()) {
                 Notification.show("No workers planned", 3000, Notification.Position.MIDDLE);
@@ -113,8 +114,7 @@ public class ArchieveView extends BaseView {
         });
     }
 
-    private static Grid<WorkerDto> getWorkerDtoGrid(List<WorkerDto> workers) {
-        Grid<WorkerDto> workersGrid = new Grid<>(WorkerDto.class);
+    private static Grid<WorkerDto> getWorkerDtoGrid(Grid<WorkerDto> workersGrid, List<WorkerDto> workers) {
         workersGrid.removeAllColumns();
         workersGrid.addColumn(WorkerDto::getId).setHeader("ID").setVisible(false);
         workersGrid.addColumn(WorkerDto::getFirstName).setHeader("Name");

@@ -4,7 +4,7 @@ import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
 import com.app.rotatio.vaadin.view.MainView;
 import com.app.rotatio.vaadin.view.StartView;
 import com.app.rotatio.vaadin.view.format.FormatMethods;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -26,6 +26,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.stream.Stream;
 
 import static javax.swing.UIManager.getUI;
 

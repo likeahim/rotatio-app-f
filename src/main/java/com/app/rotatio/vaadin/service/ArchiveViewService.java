@@ -13,8 +13,10 @@ import java.util.List;
 
 @Service
 public class ArchiveViewService extends BaseViewService {
-    public ArchiveViewService(RestTemplate restTemplate) {
+    private  final WorkerViewService workerViewService;
+    public ArchiveViewService(RestTemplate restTemplate, WorkerViewService workerViewService) {
         super(restTemplate);
+        this.workerViewService = workerViewService;
     }
 
 
