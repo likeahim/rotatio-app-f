@@ -1,4 +1,4 @@
-# Rotatio Vaadin
+# ROTATIO Vaadin
 
 ## Opis
 Jest to frontendowa część aplikacji zbudowana przy użyciu frameworka Vaadin. Komunikuje się z backendową aplikacją poprzez REST API.
