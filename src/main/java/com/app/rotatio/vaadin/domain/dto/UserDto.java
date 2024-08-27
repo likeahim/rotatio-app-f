@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDto {
         private Long id;
+        @JsonProperty("firstName")
         private String firstName;
         private String lastname;
         private String email;

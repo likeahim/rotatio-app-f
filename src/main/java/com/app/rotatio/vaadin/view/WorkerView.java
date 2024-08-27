@@ -170,15 +170,14 @@ public class WorkerView extends BaseView {
     }
 
     private Grid<WorkerDto> createWorkerGrid(List<WorkerDto> workers) {
-        List<TaskDto> allTasks = taskViewService.getAllTasks();
-        List<WorkplaceDto> allWorkplaces = workplaceViewService.getAllWorkplaces();
+        List<TaskDto> allTasks = taskViewService.getTasksByPerformed(true);
+        List<WorkplaceDto> allWorkplaces = workplaceViewService.getWorkplacesByActive(true);
         List<WorkingDayDto> unplannedPlans = planViewService.getPlansByArchived(false);
         Grid<WorkerDto> grid = new Grid<>(WorkerDto.class);
         grid.removeAllColumns();
         grid.addColumn(WorkerDto::getFirstName).setHeader("Name").setSortable(true);
         grid.addColumn(WorkerDto::getLastname).setHeader("Surname").setSortable(true);
         grid.addColumn(WorkerDto::getWorkerNumber).setHeader("Number");
-//        grid.addColumn(WorkerDto::getStatus).setHeader("Status").setSortable(true);
         grid.addComponentColumn(worker -> createPlanComboBox(worker, unplannedPlans)).setHeader("Plan");
         grid.addComponentColumn(worker -> createTaskComboBox(worker, allTasks)).setHeader("Task");
         grid.addComponentColumn(worker -> createWorkplaceComboBox(worker, allWorkplaces)).setHeader("Workplace");
@@ -199,7 +198,7 @@ public class WorkerView extends BaseView {
         Map<Long, LocalDate> planMap = unplannedPlans.stream()
                 .collect(Collectors.toMap(WorkingDayDto::getId, WorkingDayDto::getExecuteDate));
         planComboBox.setItems(planMap.values());
-        planComboBox.setValue(planMap.get(worker.getId()));
+        planComboBox.setValue(planMap.get(worker.getWorkingDayId()));
 
         planComboBox.addValueChangeListener(event -> {
             LocalDate date = event.getValue();

@@ -160,6 +160,7 @@ public class WorkplaceView extends BaseView {
                 WorkplaceDto workplaceDto = service.createWorkplace(name, isActive, used);
                 Notification.show("New workplace created: " + name, 3000, Notification.Position.MIDDLE);
                 refreshGrid();
+                workplaceDesignation.clear();
             } catch (Exception e) {
                 Notification.show("Workplace creating process failed", 3000, Notification.Position.MIDDLE);
             }

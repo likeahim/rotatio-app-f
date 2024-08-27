@@ -63,7 +63,7 @@ public class TaskView extends BaseView {
 
         TextField taskName = new TextField("Task name");
         TextField taskDescription = new TextField("Description");
-        Checkbox isPerformed = new Checkbox("Performed");
+        Checkbox isPerformed = new Checkbox("Performed", true);
         Button createTask = new Button("Create", event -> {
             String name = !taskName.isEmpty() ? taskName.getValue() : null;
             String description = !taskDescription.isEmpty() ? taskDescription.getValue() : "";
@@ -72,8 +72,12 @@ public class TaskView extends BaseView {
                 TaskDto taskDto = taskService.createTask(name, description, performed);
                 Notification.show("New task created", 3000, Notification.Position.MIDDLE);
                 refreshGrid();
+                taskName.clear();
+                taskDescription.clear();
             } catch (Exception e) {
-                Notification.show("Task creating process failed", 3000, Notification.Position.MIDDLE);
+                Notification.show("Task creating process failed " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+                taskName.clear();
+                taskDescription.clear();
             }
         });
         rightLayout.add(taskName, taskDescription, isPerformed, createTask);
@@ -114,7 +118,7 @@ public class TaskView extends BaseView {
         taskDtoGrid.addColumn(TaskDto::getId).setHeader("ID").setVisible(false);
         taskDtoGrid.addColumn(TaskDto::getName).setHeader("Name");
         taskDtoGrid.addColumn(TaskDto::getDescription).setHeader("Description");
-        taskDtoGrid.addColumn(TaskDto::getIsPerformed).setHeader("Performed");
+        taskDtoGrid.addColumn(TaskDto::isPerformed).setHeader("Performed");
         taskDtoGrid.addComponentColumn(this::createEditButton).setHeader("Edit");
         taskDtoGrid.setItems(tasks);
         return taskDtoGrid;
@@ -136,7 +140,7 @@ public class TaskView extends BaseView {
 
         binder.bind(nameField, TaskDto::getName, TaskDto::setName);
         binder.bind(descriptionField, TaskDto::getDescription, TaskDto::setDescription);
-        binder.bind(performedField, TaskDto::getIsPerformed, TaskDto::setIsPerformed);
+        binder.bind(performedField, TaskDto::isPerformed, TaskDto::setPerformed);
         binder.forField(idField)
                 .withConverter(
                         new StringToLongConverter("Invalid ID"))

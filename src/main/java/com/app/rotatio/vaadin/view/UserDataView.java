@@ -44,6 +44,7 @@ public class UserDataView extends BaseView {
         List<UserDto> allUsers = service.getAllUsers();
         usersGrid = createUserDtoGrid(allUsers);
         VerticalLayout leftLayout = baseViewService.createLeftLayout(usersGrid, getHorizontalLayout(usersGrid));
+        leftLayout.setWidth("100%");
         HorizontalLayout splitLayout = baseViewService.createSplitLayout(leftLayout, rightLayout);
         mainContent.add(splitLayout);
         service.configureDialog(dialog);

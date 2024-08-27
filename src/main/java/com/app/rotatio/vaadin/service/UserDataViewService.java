@@ -11,6 +11,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -22,6 +24,14 @@ public class UserDataViewService extends BaseViewService {
     public UserDto getUser(Long userId) {
         return restTemplate.getForObject(
                 "http://localhost:8080/v1/rotatio/users/" + userId,
+                UserDto.class
+        );
+    }
+
+    public UserDto getUserByEmail(final String email) {
+//        String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
+        return restTemplate.getForObject(
+                "http://localhost:8080/v1/rotatio/users/byEmail/" + email,
                 UserDto.class
         );
     }
@@ -70,6 +80,13 @@ public class UserDataViewService extends BaseViewService {
         String objectId = user.getObjectId();
         restTemplate.delete(
                 "http://localhost:8080/v1/rotatio/users" + objectId
+        );
+    }
+
+    public void restorePassword(String email) {
+        restTemplate.getForEntity(
+                "http://localhost:8080/v1/rotatio/users/password?email=" + email,
+                Void.class
         );
     }
 }

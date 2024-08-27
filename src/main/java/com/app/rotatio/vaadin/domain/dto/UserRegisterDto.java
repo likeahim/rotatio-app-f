@@ -1,9 +1,11 @@
 package com.app.rotatio.vaadin.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record UserRegisterDto(
-        @JsonProperty("fistName")
+        @JsonProperty("firstName")
         String firstName,
         @JsonProperty("lastname")
         String lastname,

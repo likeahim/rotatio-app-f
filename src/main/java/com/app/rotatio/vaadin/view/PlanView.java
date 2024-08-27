@@ -162,12 +162,14 @@ public class PlanView extends BaseView {
 
         DatePicker execute = new DatePicker("Execute date");
         DatePicker created = new DatePicker("Create date", LocalDate.now());
+        created.setReadOnly(true);
         Button createPlan = new Button("Create", event -> {
             LocalDate executeValue = execute.getValue() != null ? execute.getValue() : null;
             LocalDate createdValue = created.getValue() != null ? created.getValue() : LocalDate.now();
             try {
                 WorkingDayDto workingDay = planService.createPlan(createdValue, executeValue, (Long) VaadinSession.getCurrent().getAttribute("userId"));
                 Notification.show("New plan created", 3000, Notification.Position.MIDDLE);
+                refreshGrid();
             } catch (Exception e) {
                 Notification.show("Plan for this day " + executeValue + " exists", 3000, Notification.Position.MIDDLE);
             }

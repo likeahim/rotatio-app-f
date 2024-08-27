@@ -10,4 +10,5 @@ public class ButtonContainer {
     public static final Button LOG_OUT = ButtonHelper.createLogOutButton();
     public static final Button SUBMIT_BUTTON = new Button("Submit");
     public static final Button CANCEL_BUTTON = new Button("Cancel");
+    public static final Button RESTORE_PASSWORD = new Button("Restore password");
 }

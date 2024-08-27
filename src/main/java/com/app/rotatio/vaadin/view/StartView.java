@@ -10,26 +10,26 @@ import org.springframework.web.client.RestTemplate;
 @Route("")
 public class StartView extends VerticalLayout {
 
-    private final RestTemplate restTemplate;
-    private final StartViewService service;
+    private final StartViewService startViewService;
 
-    public StartView(RestTemplate restTemplate, StartViewService service) {
-        this.service = service;
-        this.restTemplate = restTemplate;
+    public StartView(StartViewService startViewService) {
+        this.startViewService = startViewService;
 
         setSizeFull();
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        service.logIn(ButtonContainer.LOGIN_BUTTON, restTemplate);
-        service.signIn(ButtonContainer.SIGN_IN_BUTTON, restTemplate);
+        startViewService.addLoginButtonListener(ButtonContainer.LOGIN_BUTTON);
+        startViewService.addSignInButtonListener(ButtonContainer.SIGN_IN_BUTTON);
+        startViewService.addRestorePasswordButtonListener(ButtonContainer.RESTORE_PASSWORD);
 
         add(
                 FieldContainer.LOG_IN,
                 FieldContainer.PASSWORD,
                 ButtonContainer.LOGIN_BUTTON,
-                ButtonContainer.SIGN_IN_BUTTON
+                ButtonContainer.SIGN_IN_BUTTON,
+                ButtonContainer.RESTORE_PASSWORD
         );
     }
 }

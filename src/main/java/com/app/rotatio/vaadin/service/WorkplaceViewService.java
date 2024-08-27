@@ -71,5 +71,12 @@ public class WorkplaceViewService extends BaseViewService {
                 new ParameterizedTypeReference<List<WorkplaceDto>>() {}
         ).getBody();
     }
+
+    public WorkplaceDto getWorkplaceById(final Long id) {
+        return restTemplate.getForObject(
+                "http://localhost:8080/v1/rotatio/workplaces/" + id,
+                WorkplaceDto.class
+        );
+    }
 }
 

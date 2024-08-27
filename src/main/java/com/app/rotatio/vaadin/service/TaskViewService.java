@@ -30,7 +30,14 @@ public class TaskViewService extends BaseViewService {
         ).getBody();
     }
 
-    public TaskDto createTask(String name, String description, boolean isPerformed) {
+    public TaskDto getTaskById(final Long id) {
+        return restTemplate.getForObject(
+                "http://localhost:8080/v1/rotatio/tasks/" + id,
+                TaskDto.class
+        );
+    }
+
+    public TaskDto createTask(final String name, final String description, final boolean isPerformed) {
         TaskDto taskDto = new TaskDto(null, name, description, isPerformed);
         HttpEntity<TaskDto> request = new HttpEntity<>(taskDto);
         return restTemplate.postForObject(
@@ -40,7 +47,7 @@ public class TaskViewService extends BaseViewService {
         );
     }
 
-    public void updateTask(TaskDto task) {
+    public void updateTask(final TaskDto task) {
         HttpEntity<TaskDto> request = new HttpEntity<>(task);
         ResponseEntity<TaskDto> response = restTemplate.exchange(
                 "http://localhost:8080/v1/rotatio/tasks/update",
