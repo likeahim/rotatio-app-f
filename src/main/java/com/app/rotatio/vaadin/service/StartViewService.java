@@ -2,28 +2,14 @@ package com.app.rotatio.vaadin.service;
 
 import com.app.rotatio.vaadin.container.button.ButtonContainer;
 import com.app.rotatio.vaadin.container.field.FieldContainer;
-import com.app.rotatio.vaadin.domain.dto.BackendlessLoginUserDto;
-import com.app.rotatio.vaadin.domain.dto.UserDto;
-import com.app.rotatio.vaadin.domain.dto.UserRegisterDto;
-import com.app.rotatio.vaadin.view.BaseView;
-import com.app.rotatio.vaadin.view.MainView;
 import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.NativeLabel;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.server.VaadinSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

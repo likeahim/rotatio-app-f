@@ -1,15 +1,11 @@
 package com.app.rotatio.vaadin.view;
 
-import com.app.rotatio.vaadin.domain.dto.TaskDto;
 import com.app.rotatio.vaadin.domain.dto.UserDto;
-import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
 import com.app.rotatio.vaadin.service.BaseViewService;
-import com.app.rotatio.vaadin.service.PlanViewService;
 import com.app.rotatio.vaadin.service.UserDataViewService;
 import com.app.rotatio.vaadin.view.button.ButtonHelper;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.BoxSizing;
@@ -17,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.web.client.RestTemplate;

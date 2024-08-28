@@ -5,7 +5,6 @@ import com.app.rotatio.vaadin.container.field.FieldContainer;
 import com.app.rotatio.vaadin.service.StartViewService;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import org.springframework.web.client.RestTemplate;
 
 @Route("")
 public class StartView extends VerticalLayout {

@@ -1,5 +1,6 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.container.field.FieldContainer;
 import com.app.rotatio.vaadin.domain.dto.BackendlessLoginUserDto;
 import com.app.rotatio.vaadin.domain.dto.UserDto;
@@ -18,6 +19,7 @@ public class AuthenticationService {
 
     private final RestTemplate restTemplate;
     private final UserDataViewService userDataViewService;
+    private final EndpointConfig endpointConfig;
 
     public void logInUser() {
         if (!FieldContainer.LOG_IN.isEmpty() && !FieldContainer.PASSWORD.isEmpty()) {
@@ -31,7 +33,7 @@ public class AuthenticationService {
 
             try {
                 ResponseEntity<UserDto> response = restTemplate.exchange(
-                        "http://localhost:8080/v1/rotatio/users/login",
+                        endpointConfig.getUsersLoginEndpoint(),
                         HttpMethod.POST,
                         request,
                         UserDto.class

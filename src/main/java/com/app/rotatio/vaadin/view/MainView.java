@@ -1,6 +1,5 @@
 package com.app.rotatio.vaadin.view;
 
-import com.app.rotatio.vaadin.domain.dto.WorkerDto;
 import com.app.rotatio.vaadin.service.BaseViewService;
 import com.app.rotatio.vaadin.service.MainViewService;
 import com.app.rotatio.vaadin.view.format.FormatMethods;
@@ -8,8 +7,6 @@ import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.client.RestTemplate;
 
 @Route("main")

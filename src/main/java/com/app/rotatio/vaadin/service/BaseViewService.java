@@ -1,8 +1,6 @@
 package com.app.rotatio.vaadin.service;
 
-import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
-import com.app.rotatio.vaadin.view.MainView;
-import com.app.rotatio.vaadin.view.StartView;
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.view.format.FormatMethods;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
@@ -19,7 +17,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,22 +24,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.stream.Stream;
-
-import static javax.swing.UIManager.getUI;
-
 @Service
 public class BaseViewService<T> {
 
     public final RestTemplate restTemplate;
-
-    public BaseViewService(RestTemplate restTemplate) {
+    public final EndpointConfig endpointConfig;
+    public BaseViewService(RestTemplate restTemplate, EndpointConfig endpointConfig) {
         this.restTemplate = restTemplate;
+        this.endpointConfig = endpointConfig;
     }
 
     public String getTime() {
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/time/value?timeZone=Poland", String.class
+                endpointConfig.getTimeApiCurrentEndpoint(), String.class
         );
     }
 
@@ -57,13 +51,13 @@ public class BaseViewService<T> {
         Tab plans = createTab(VaadinIcon.LIST, "Plans");
         Tab archivedPlans = createTab(VaadinIcon.ARCHIVE, "Archived Plans");
         FormatMethods.setNavigate(home, "main");
-        FormatMethods.setNavigate(workplaces, "workplaces");
         FormatMethods.setNavigate(plans, "plans");
         FormatMethods.setNavigate(tasks, "tasks");
+        FormatMethods.setNavigate(workplaces, "workplaces");
         FormatMethods.setNavigate(workers, "workers");
-        FormatMethods.setNavigate(userData, "user-data");
         FormatMethods.setNavigate(archivedPlans, "archived-plans");
-        tabs.add(home, plans, workers, workplaces, tasks, userData, archivedPlans);
+        FormatMethods.setNavigate(userData, "user-data");
+        tabs.add(home, plans, tasks, workplaces, workers, archivedPlans, userData);
 
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
@@ -120,14 +114,13 @@ public class BaseViewService<T> {
         dialog.setHeight("300px");
     }
 
-//to transfer in other service?
     public void logOut(Button logOutButton, RestTemplate restTemplate) {
         logOutButton.addClickListener(event -> {
             Long userId = (Long) VaadinSession.getCurrent().getAttribute("userId");
             String userToken = (String) VaadinSession.getCurrent().getAttribute("userToken");
             String url = "";
             if (userId != null) {
-                url = "http://localhost:8080/v1/rotatio/users/logout/" + userId;
+                url = endpointConfig.getUsersLogoutEndpoint() + userId;
             }
             HttpHeaders headers = new HttpHeaders();
             headers.set("user-token", userToken);

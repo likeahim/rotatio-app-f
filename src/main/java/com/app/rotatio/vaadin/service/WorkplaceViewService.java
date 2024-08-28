@@ -1,9 +1,8 @@
 package com.app.rotatio.vaadin.service;
 
-import com.app.rotatio.vaadin.domain.dto.TaskDto;
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.domain.dto.WorkplaceDto;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,13 +14,14 @@ import java.util.List;
 
 @Service
 public class WorkplaceViewService extends BaseViewService {
-    public WorkplaceViewService(RestTemplate restTemplate) {
-        super(restTemplate);
+
+    public WorkplaceViewService(RestTemplate restTemplate, EndpointConfig endpointConfig) {
+        super(restTemplate, endpointConfig);
     }
 
     public List<WorkplaceDto> getAllWorkplaces() {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workplaces",
+                endpointConfig.getWorkplacesProdEndpoint(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkplaceDto>>() {}
@@ -32,7 +32,7 @@ public class WorkplaceViewService extends BaseViewService {
         WorkplaceDto workplaceDto = new WorkplaceDto(null, designation, isActive, used);
         HttpEntity<WorkplaceDto> request = new HttpEntity<>(workplaceDto);
         return restTemplate.postForObject(
-                "http://localhost:8080/v1/rotatio/workplaces",
+                endpointConfig.getWorkplacesProdEndpoint(),
                 request,
                 WorkplaceDto.class
         );
@@ -41,7 +41,7 @@ public class WorkplaceViewService extends BaseViewService {
     public void updateWorkplace(WorkplaceDto workplaceDto) {
         HttpEntity<WorkplaceDto> request = new HttpEntity<>(workplaceDto);
         ResponseEntity<WorkplaceDto> response = restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workplaces",
+                endpointConfig.getWorkplacesProdEndpoint(),
                 HttpMethod.PUT,
                 request,
                 WorkplaceDto.class
@@ -56,7 +56,7 @@ public class WorkplaceViewService extends BaseViewService {
 
     public List<WorkplaceDto> getWorkplacesByActive(boolean active) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workplaces/byActive/" + active,
+                endpointConfig.getWorkplacesByActiveEndpoint() + active,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkplaceDto>>() {}
@@ -65,7 +65,7 @@ public class WorkplaceViewService extends BaseViewService {
 
     public List<WorkplaceDto> getWorkplacesByUsed(boolean used) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workplaces/byNowUsed/" + used,
+                endpointConfig.getWorkplacesByNowUsedEndpoint() + used,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkplaceDto>>() {}
@@ -74,7 +74,7 @@ public class WorkplaceViewService extends BaseViewService {
 
     public WorkplaceDto getWorkplaceById(final Long id) {
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/workplaces/" + id,
+                endpointConfig.getWorkplacesProdEndpoint() + "/" + id,
                 WorkplaceDto.class
         );
     }

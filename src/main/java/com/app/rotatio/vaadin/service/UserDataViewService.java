@@ -1,5 +1,6 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.domain.dto.UserDto;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.server.VaadinSession;
@@ -11,19 +12,18 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
 public class UserDataViewService extends BaseViewService {
-    public UserDataViewService(RestTemplate restTemplate) {
-        super(restTemplate);
+
+    public UserDataViewService(RestTemplate restTemplate, EndpointConfig endpointConfig) {
+        super(restTemplate, endpointConfig);
     }
 
     public UserDto getUser(Long userId) {
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/users/" + userId,
+                endpointConfig.getUsersProdEndpoint() + "/" + userId,
                 UserDto.class
         );
     }
@@ -31,14 +31,14 @@ public class UserDataViewService extends BaseViewService {
     public UserDto getUserByEmail(final String email) {
 //        String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/users/byEmail/" + email,
+                endpointConfig.getUsersByEmailEndpoint() + email,
                 UserDto.class
         );
     }
 
     public List<UserDto> getAllUsers() {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/users",
+                endpointConfig.getUsersProdEndpoint(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<UserDto>>() {
@@ -59,7 +59,7 @@ public class UserDataViewService extends BaseViewService {
 
         try {
             ResponseEntity<UserDto> response = restTemplate.exchange(
-                    "http://localhost:8080/v1/rotatio/users",
+                    endpointConfig.getUsersProdEndpoint(),
                     HttpMethod.PUT,
                     request,
                     UserDto.class
@@ -79,13 +79,13 @@ public class UserDataViewService extends BaseViewService {
         UserDto user = getUser(userId);
         String objectId = user.getObjectId();
         restTemplate.delete(
-                "http://localhost:8080/v1/rotatio/users" + objectId
+                endpointConfig.getUsersProdEndpoint() + "/" + objectId
         );
     }
 
     public void restorePassword(String email) {
         restTemplate.getForEntity(
-                "http://localhost:8080/v1/rotatio/users/password?email=" + email,
+                endpointConfig.getUsersRestorePasswordEndpoint() + email,
                 Void.class
         );
     }

@@ -1,7 +1,6 @@
 package com.app.rotatio.vaadin.domain.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

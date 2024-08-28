@@ -78,18 +78,6 @@ public class WorkerView extends BaseView {
             refreshGrid();
         });
 
-        DatePicker presenceTo = new DatePicker("Presence to");
-        Button showByPresence = new Button("Presence to", event -> {
-            List<WorkerDto> filteredWorkers = service.getWorkersByPresenceTo(presenceTo.getValue());
-            workersGrid.setItems(filteredWorkers);
-        });
-
-        DatePicker presenceFrom = new DatePicker("Presence from");
-        Button showByAbsence = new Button("Present from", event -> {
-            List<WorkerDto> filteredWorkers = service.getWorkersByPresenceFrom(presenceFrom.getValue());
-            workersGrid.setItems(filteredWorkers);
-        });
-
         DatePicker planDate = new DatePicker("Plan date");
         Button showByPlan = new Button("Show by plan", event -> {
             List<WorkerDto> filteredWorkers = service.getWorkersByPlan(planDate.getValue());
@@ -106,8 +94,6 @@ public class WorkerView extends BaseView {
         filterLayout.add(
                 showAll,
                 planDate, showByPlan,
-                presenceTo, showByPresence,
-                presenceFrom, showByAbsence,
                 status, showByStatus
         );
         filterLayout.getStyle().set("border", "1px solid black").set("padding", "10px");

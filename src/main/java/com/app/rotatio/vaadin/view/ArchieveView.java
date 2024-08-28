@@ -91,7 +91,6 @@ public class ArchieveView extends BaseView {
         Grid<ArchiveDto> archivesGrid = new Grid<>(ArchiveDto.class);
         archivesGrid.removeAllColumns();
         if (archives.isEmpty()) {
-            label = new NativeLabel("No archive found");
             Notification.show("No archives", 3000, Notification.Position.MIDDLE);
             return archivesGrid;
         }
@@ -101,7 +100,6 @@ public class ArchieveView extends BaseView {
             WorkingDayDto workingDay = planService.getPlanById(workingDayId);
             return workingDay != null ? workingDay.getExecuteDate() : null;
         }).setHeader("Execute date");
-        archivesGrid.addComponentColumn(this::createPrintButton).setHeader("Print");
         archivesGrid.addComponentColumn(this::createDeleteButton).setHeader("Delete");
         archivesGrid.addComponentColumn(this::createShowWorkersButton).setHeader("Show workers");
         archivesGrid.setItems(archives);
@@ -166,13 +164,6 @@ public class ArchieveView extends BaseView {
             service.deleteArchive(archiveDto.getId());
             Notification.show("Archive deleted", 3000, Notification.Position.MIDDLE);
             refreshGrid();
-        });
-    }
-
-    private Component createPrintButton(ArchiveDto archiveDto) {
-        return new Button("Print", VaadinIcon.PRINT.create(), event -> {
-            service.printArchive(archiveDto);
-            Notification.show("Archive printed", 3000, Notification.Position.MIDDLE);
         });
     }
 }

@@ -1,5 +1,6 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.domain.dto.ArchiveDto;
 import com.app.rotatio.vaadin.domain.dto.TaskDto;
 import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
@@ -18,13 +19,13 @@ import java.util.List;
 @Service
 public class PlanViewService extends BaseViewService {
 
-    public PlanViewService(RestTemplate restTemplate) {
-        super(restTemplate);
+    public PlanViewService(RestTemplate restTemplate, EndpointConfig endpointConfig) {
+        super(restTemplate, endpointConfig);
     }
 
     public List<WorkingDayDto> getAllPlans() {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays",
+                endpointConfig.getPlansProdEndpoint(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkingDayDto>>() {
@@ -34,7 +35,7 @@ public class PlanViewService extends BaseViewService {
 
     public List<WorkingDayDto> getUsersPlans(Long userId) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays/byUser/" + userId,
+                endpointConfig.getPlansByUserEndpoint() + userId,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkingDayDto>>() {
@@ -44,7 +45,7 @@ public class PlanViewService extends BaseViewService {
 
     public List<WorkingDayDto> getPlansByPlanned(boolean planned) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays/planned/" + planned,
+                endpointConfig.getPlansByPlannedEndpoint() + planned,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkingDayDto>>() {
@@ -54,7 +55,7 @@ public class PlanViewService extends BaseViewService {
 
     public List<WorkingDayDto> getPlansByArchived(boolean archived) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays/byArchived/" + archived,
+                endpointConfig.getPlansByArchivedEndpoint() + archived,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkingDayDto>>() {}
@@ -63,7 +64,7 @@ public class PlanViewService extends BaseViewService {
 
     public WorkingDayDto getPlanByExecuteDay(LocalDate executeDay) {
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/workingDays/execute/" + executeDay,
+                endpointConfig.getPlansByExecuteEndpoint() + executeDay,
                 WorkingDayDto.class
         );
     }
@@ -74,7 +75,7 @@ public class PlanViewService extends BaseViewService {
         );
         HttpEntity<WorkingDayDto> request = new HttpEntity<>(workingDayDto);
         return restTemplate.postForObject(
-                "http://localhost:8080/v1/rotatio/workingDays",
+                endpointConfig.getPlansProdEndpoint(),
                 request,
                 WorkingDayDto.class
         );
@@ -83,7 +84,7 @@ public class PlanViewService extends BaseViewService {
     public void updatePlan(WorkingDayDto workingDay) {
         HttpEntity<WorkingDayDto> request = new HttpEntity<>(workingDay);
         ResponseEntity<TaskDto> response = restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workingDays",
+                endpointConfig.getPlansProdEndpoint(),
                 HttpMethod.PUT,
                 request,
                 TaskDto.class);
@@ -97,7 +98,7 @@ public class PlanViewService extends BaseViewService {
 
     public ArchiveDto archivePlan(Long workingDayId) {
         return restTemplate.postForObject(
-              "http://localhost:8080/v1/rotatio/archives/" + workingDayId,
+                endpointConfig.getPlansProdEndpoint() + "/" + workingDayId,
               null,
               ArchiveDto.class
         );
@@ -105,7 +106,7 @@ public class PlanViewService extends BaseViewService {
 
     public WorkingDayDto getPlanById(Long workingDayId) {
         return restTemplate.getForObject(
-                "http://localhost:8080/v1/rotatio/workingDays/" + workingDayId,
+                endpointConfig.getPlansProdEndpoint() + "/" + workingDayId,
                 WorkingDayDto.class
         );
     }

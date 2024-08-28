@@ -1,8 +1,8 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.domain.dto.WorkerDto;
 import com.app.rotatio.vaadin.domain.dto.WorkingDayDto;
-import com.app.rotatio.vaadin.domain.dto.WorkplaceDto;
 import com.vaadin.flow.component.notification.Notification;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,34 +19,14 @@ public class WorkerViewService extends BaseViewService {
 
     private final PlanViewService planViewService;
 
-    public WorkerViewService(RestTemplate restTemplate, PlanViewService planViewService) {
-        super(restTemplate);
+    public WorkerViewService(RestTemplate restTemplate, EndpointConfig endpointConfig, PlanViewService planViewService) {
+        super(restTemplate, endpointConfig);
         this.planViewService = planViewService;
     }
 
     public List<WorkerDto> getAllWorkers() {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<WorkerDto>>() {
-                }
-        ).getBody();
-    }
-
-    public List<WorkerDto> getWorkersByPresenceTo(LocalDate date) {
-        return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers/byAbsenceFrom/" + date,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<WorkerDto>>() {
-                }
-        ).getBody();
-    }
-
-    public List<WorkerDto> getWorkersByPresenceFrom(LocalDate date) {
-        return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers/byPresenceBefore/" + date,
+                endpointConfig.getWorkersProdEndpoint(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkerDto>>() {
@@ -57,7 +37,7 @@ public class WorkerViewService extends BaseViewService {
     public List<WorkerDto> getWorkersByPlan(LocalDate value) {
         WorkingDayDto planByExecuteDay = planViewService.getPlanByExecuteDay(value);
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers/byWorkingDay/" + planByExecuteDay.getId(),
+                endpointConfig.getWorkersByPlanEndpoint() + planByExecuteDay.getId(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkerDto>>() {
@@ -67,7 +47,7 @@ public class WorkerViewService extends BaseViewService {
 
     public List<WorkerDto> getWorkersByStatus(final int value) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers/byStatus/" + value,
+                endpointConfig.getWorkersByStatusEndpoint() + value,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<WorkerDto>>() {}
@@ -77,7 +57,7 @@ public class WorkerViewService extends BaseViewService {
     public WorkerDto createWorker(WorkerDto worker) {
         HttpEntity<WorkerDto> request = new HttpEntity<>(worker);
         return restTemplate.postForObject(
-                "http://localhost:8080/v1/rotatio/workers",
+                endpointConfig.getWorkersProdEndpoint(),
                 request,
                 WorkerDto.class
         );
@@ -86,7 +66,7 @@ public class WorkerViewService extends BaseViewService {
     public void updateWorker(WorkerDto worker) {
         HttpEntity<WorkerDto> request = new HttpEntity<>(worker);
         ResponseEntity<WorkerDto> response = restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers",
+                endpointConfig.getWorkersProdEndpoint(),
                 HttpMethod.PUT,
                 request,
                 WorkerDto.class
@@ -101,7 +81,7 @@ public class WorkerViewService extends BaseViewService {
 
     public WorkerDto deleteWorker(Long id) {
         return restTemplate.exchange(
-                "http://localhost:8080/v1/rotatio/workers/" + id,
+                endpointConfig.getWorkersProdEndpoint() + "/" + id,
                 HttpMethod.DELETE,
                 null,
                 WorkerDto.class

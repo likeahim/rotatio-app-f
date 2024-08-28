@@ -1,10 +1,9 @@
 package com.app.rotatio.vaadin.service;
 
+import com.app.rotatio.vaadin.config.EndpointConfig;
 import com.app.rotatio.vaadin.domain.dto.*;
 import com.app.rotatio.vaadin.mapper.WorkerMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,17 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +25,7 @@ public class PdfService {
     private final WorkerMapper workerMapper;
     private final TaskViewService taskViewService;
     private final WorkplaceViewService workplaceViewService;
-    private final PlanViewService planViewService;
+    private final EndpointConfig endpointConfig;
 
     public ResponseDto generatePdfFromWorkerData(List<WorkerDto> workers) {
         TaskDto task = new TaskDto(null, "No task", "", true);
@@ -64,7 +56,7 @@ public class PdfService {
     }
 
     private ResponseDto sendHtmlToPdfCo(RequestDto requestDto) {
-        String url = "http://localhost:8080/v1/rotatio/pdf";
+        String url = endpointConfig.getPdfCoEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
